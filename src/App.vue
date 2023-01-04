@@ -9,7 +9,7 @@
   <div class="month">
     <div class="week"
       v-for="week in month"
-      :key="week"><div class="day" :class="{ 'empty': day==='' }" v-for="day in week" :key="day">{{day}}</div></div>
+      :key="week"><div class="day" :class="{ 'empty': day==='' }" v-for="day in week" :key="day"><div :class="{'dayNumber': day!=''}">{{day}}</div></div></div>
   </div>
 
 </div>
@@ -92,11 +92,28 @@ export default {
 .day{
   width: 50px;
   height: 50px;
-  text-align: center;
-  line-height: 50px;
+  position: relative;
   border: 1px solid black;
   margin-right: 1px;
   vertical-align: middle;
+}
+
+.dayNumber{
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translate3d(-50%, -50%, 0);
+  text-align: center;
+  line-height: 30px;
+  width: 30px;
+  height: 30px;
+}
+
+.day:hover .dayNumber{
+  background-color: #a7e7e9;
+  color: white;
+  border-radius: 50%;;
 }
 
 .day:nth-child(6), .day:nth-child(7){
