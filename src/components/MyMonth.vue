@@ -41,7 +41,7 @@ export default {
             return createdMonth
         },
         createCalendar(){
-            let days = new Date(this.chosenYear-1, this.chosenMonth+1, 0).getDate();
+            let days = new Date(this.chosenYear, this.chosenMonth+1, 0).getDate();
             let startDay = new Date(this.chosenYear-1, this.chosenMonth, 1).getDay();
             this.month = this.createMonth(days, startDay);
         }
@@ -80,7 +80,6 @@ export default {
   position: relative;
   border: 1px solid black;
   margin-right: 1px;
-  vertical-align: middle;
 }
 
 .dayNumber{

@@ -1,14 +1,27 @@
 <template>
 <div name="App">
+  <div class="date">{{ chosenYear }} {{ months[chosenMonth].name }}</div>
   <div class="slider">
-    <div @click="decreaseMonth" class="slider_btn btn-prev">Prev</div>
-    <div @click="increaseMonth" class="slider_btn btn-next">Next</div>
-    <div class="slider_date">{{ chosenYear }} {{ months[chosenMonth].name }}</div>
-    <div class="slider_body">
-      <my-month
-        :chosenMonth="chosenMonth"
-        :chosenYear="chosenYear"  
-      ></my-month>
+    <div @click="slideToRight" class="slider_btn btn-prev">Prev</div>
+    <div @click="slideToLeft" class="slider_btn btn-next">Next</div>
+    <div class="slider_wrapper">
+      <div class="weekdays">
+      <div class="weekday" v-for="day in days" :key="day.value"><div class="day_name">{{ day.name }}</div></div>
+    </div>
+      <div class="slider_body">
+        <div class="slider_item">      <my-month
+          :chosenMonth="chosenMonth-1"
+          :chosenYear="chosenYear"
+        ></my-month></div>
+        <div class="slider_item">      <my-month
+          :chosenMonth="chosenMonth"
+          :chosenYear="chosenYear"
+        ></my-month></div>
+        <div class="slider_item">      <my-month
+          :chosenMonth="chosenMonth+1"
+          :chosenYear="chosenYear"
+        ></my-month></div>
+      </div>
     </div>
 
   </div>
@@ -38,8 +51,18 @@ export default {
         {value: 10, name: "Ноябрь"},
         {value: 11, name: "Декабрь"},
       ],
+      days: [
+              {value: 0, name:"Пн"},
+              {value: 0, name:"Вт"},
+              {value: 0, name:"Ср"},
+              {value: 0, name:"Чт"},
+              {value: 0, name:"Пт"},
+              {value: 0, name:"Сб"},
+              {value: 0, name:"Вс"},
+            ],
       chosenMonth: 0,
       chosenYear: 2023,
+      direction: 0,
     }
   },
   methods: {
@@ -56,6 +79,35 @@ export default {
         this.chosenYear+=1;
         this.chosenMonth=0;
       }
+    },
+
+    rerenderSlider(){
+      let sliderBody = document.querySelector(".slider_body");
+      sliderBody.style.transition = "none";
+      if(this.direction===1){
+        this.increaseMonth();
+      }
+      else if(this.direction===-1){
+        this.decreaseMonth();
+      }
+      sliderBody.style.transform = "translateX(-100%)";
+      setTimeout(()=>{
+          sliderBody.style.transition = ".2s linear";
+        }, 1)
+    },
+
+    slideToLeft(){
+      let sliderBody = document.querySelector(".slider_body");
+      this.direction = 1;
+      sliderBody.addEventListener("transitionend", this.rerenderSlider);
+      sliderBody.style.transform = "translateX(-200%)";
+
+    },
+    slideToRight(){
+      let sliderBody = document.querySelector(".slider_body");
+      this.direction = -1;
+      sliderBody.addEventListener("transitionend", this.rerenderSlider);
+      sliderBody.style.transform = "translateX(0%)";
     }
   },
   mounted(){
@@ -78,7 +130,9 @@ export default {
 
 .slider{
   position: relative;
-  height: 300px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
 }
 
 .slider_btn{
@@ -88,6 +142,7 @@ export default {
 
   cursor: pointer;
 
+  z-index: 1000;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -96,7 +151,47 @@ export default {
             user-select: none;
 }
 
+.slider_wrapper{
+  border: 1px solid black;
+  width: 90%;
+  overflow: hidden;
+}
+
+.weekdays{
+  display: flex;
+  justify-content: center;
+}
+
+.weekday{
+  width: 50px;
+  height: 50px;
+  position: relative;
+  border: 1px solid black;
+  margin-right: 1px;
+  vertical-align: middle;
+  margin-bottom: 1px;
+}
+
+.day_name{
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translate3d(-50%, -50%, 0);
+  text-align: center;
+  line-height: 30px;
+  width: 30px;
+  height: 30px;
+}
+
 .slider_body{
+  display: flex;
+  transform: translateX(-100%);
+  transition: .2s linear;
+}
+
+.slider_item{
+  min-width: 100%;
   display: flex;
   justify-content: center;
 }
