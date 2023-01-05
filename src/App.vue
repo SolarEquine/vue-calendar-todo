@@ -1,17 +1,17 @@
 <template>
 <div name="App">
-  <select name="monthSelect" id="monthSelect" v-model="chosenMonth">
-    <option v-for="option in monthOptions" :key="option.value" :value="option.value">{{option.name}}</option>
-  </select>
-  <input type="text"
-        v-model="chosenYear"
-        />
-  <my-month
-  ref="myMonth"
-  :chosenMonth="chosenMonth"
-  :chosenYear="chosenYear"  
-  ></my-month>
+  <div class="slider">
+    <div @click="decreaseMonth" class="slider_btn btn-prev">Prev</div>
+    <div @click="increaseMonth" class="slider_btn btn-next">Next</div>
+    <div class="slider_date">{{ chosenYear }} {{ months[chosenMonth].name }}</div>
+    <div class="slider_body">
+      <my-month
+        :chosenMonth="chosenMonth"
+        :chosenYear="chosenYear"  
+      ></my-month>
+    </div>
 
+  </div>
 </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
   name: 'App',
   data(){
     return{
-      monthOptions:[
+      months:[
         {value: 0, name: "Январь"},
         {value: 1, name: "Февраль"},
         {value: 2, name: "Март"},
@@ -39,11 +39,24 @@ export default {
         {value: 11, name: "Декабрь"},
       ],
       chosenMonth: 0,
-      chosenYear: 0,
+      chosenYear: 2023,
     }
   },
   methods: {
-
+    decreaseMonth(){
+      this.chosenMonth -=1;
+      if(this.chosenMonth<0){
+        this.chosenYear-=1;
+        this.chosenMonth=11;
+      }
+    },
+    increaseMonth(){
+      this.chosenMonth +=1;
+      if(this.chosenMonth>11){
+        this.chosenYear+=1;
+        this.chosenMonth=0;
+      }
+    }
   },
   mounted(){
     
@@ -63,6 +76,38 @@ export default {
   padding: 0;
 }
 
+.slider{
+  position: relative;
+  height: 300px;
+}
+
+.slider_btn{
+  position: absolute;
+  top:50%;
+  transform: translateY(-50%);
+
+  cursor: pointer;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
+
+.slider_body{
+  display: flex;
+  justify-content: center;
+}
+
+.btn-prev{
+  left: 0;
+}
+
+.btn-next{
+  right: 0;
+}
 
 
 </style>
