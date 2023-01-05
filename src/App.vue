@@ -1,11 +1,10 @@
 <template>
 <div>
-  <div>{{startingDay}}</div>
-  <button class="btn" @click="increaseDays">+</button>
-  <button class="btn" @click="decreaseDays">-</button>
-  <select name="daySelect" id="daySelect" v-model="startingDay">
-    <option v-for="option in options" :key="option.value" :value="option.value">{{option.name}}</option>
+  <button @click="createCalendar">Создать календарь</button>
+  <select name="monthSelect" id="monthSelect" v-model="chosenMonth">
+    <option v-for="option in monthOptions" :key="option.value" :value="option.value">{{option.name}}</option>
   </select>
+  <input type="text" name="yearSelect" v-model="chosenYear">
   <div class="month">
     <div class="week"
       v-for="week in month"
@@ -17,35 +16,35 @@
 
 <script>
 
+
 export default {
   name: 'App',
   data(){
     return{
       month:[],
-      daysInMonth: 0,
-      startingDay: 1,
-      options:[
-        {value: 1, name:"Понедельник"},
-        {value: 2, name:"Вторник"},
-        {value: 3, name:"Среда"},
-        {value: 4, name:"Четверг"},
-        {value: 5, name:"Пятница"},
-        {value: 6, name:"Суббота"},
-        {value: 7, name:"Воскресенье"},
-      ]
+      monthOptions:[
+        {value: 0, name: "Январь"},
+        {value: 1, name: "Февраль"},
+        {value: 2, name: "Март"},
+        {value: 3, name: "Апрель"},
+        {value: 4, name: "Май"},
+        {value: 5, name: "Июнь"},
+        {value: 6, name: "Июль"},
+        {value: 7, name: "Август"},
+        {value: 8, name: "Сентябрь"},
+        {value: 9, name: "Октябрь"},
+        {value: 10, name: "Ноябрь"},
+        {value: 11, name: "Декабрь"},
+      ],
+      chosenMonth: 0,
+      chosenYear: 0,
     }
   },
   methods: {
-    increaseDays(){
-      this.daysInMonth+=1;
-    },
-    decreaseDays(){
-      this.daysInMonth-=1;
-    },
     createMonth(days, startDay){
       let createdMonth = [];
       let week=[];
-      for (let j=2; j<=startDay; j++){
+      for (let j=1; j<=startDay; j++){
         week.push("");
       }
       for(let i=1; i<=days; i++){
@@ -55,16 +54,20 @@ export default {
           week=[]
         }
       }
-      this.month = createdMonth;
+      return createdMonth
+    },
+    createCalendar(){
+      let days = new Date(this.chosenYear, this.chosenMonth+1, 0).getDate();
+      let startDay = new Date(this.chosenYear, this.chosenMonth, 1).getDay();
+
+      this.month = this.createMonth(days, startDay);
     }
   },
   mounted(){
-    this.createMonth(this.daysInMonth)
+    
   },
   watch:{
-    daysInMonth(){
-      this.createMonth(this.daysInMonth, this.startingDay);
-    }
+
   }
 }
 
